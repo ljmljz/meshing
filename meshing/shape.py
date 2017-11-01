@@ -9,12 +9,16 @@ import geometry as geo
 
 
 class BaseShape(object):
+    """Shape base class
+
+    """
+
     def __init__(self):
         self._points = None
 
     @property
     def points(self):
-        return self._points
+        return list(self._points)
 
     def deg2rad(deg):
         return round((deg * math.pi / 180.0), 2)
@@ -49,7 +53,7 @@ class Line(BaseShape):
         self.end = end
         self.width = width
 
-        self._points = numpy.array([start, end])
+        self._points = numpy.array([start, end]).reshape(-1)
 
 
 class Arc(BaseShape):
@@ -71,6 +75,10 @@ class Arc(BaseShape):
         self._calc_points()
 
     def _calc_points(self):
+        """Calculate the points on the arc
+
+        :return:
+        """
         if self._radius <= 0:
             self._calc_radius()
 
@@ -102,9 +110,13 @@ class Arc(BaseShape):
             points.extend([x, y])
 
         points.extend(self.end)
-        self._points = numpy.array(points)
+        self._points = numpy.array(points).reshape(-1)
 
     def _calc_radius(self):
+        """Calculate the radius of the circle or arc
+
+        :return:
+        """
         self._radius = round(
             math.sqrt(
                 (self.center[0] - self.start[0]) * (self.center[0] - self.start[0])
@@ -121,11 +133,21 @@ class Polygon(BaseShape):
         self._shapes = []
 
     def append(self, shape):
+        """Append a shape segment to the polygon
+
+        :param shape: a instance of the Line or Arc
+        :return:
+        """
         assert isinstance(shape, (Line, Arc))
 
         self._shapes.append(shape)
 
     def add_hole(self, hole):
+        """Add a hole to the polygon
+
+        :param hole: a instance of the Hole
+        :return:
+        """
         assert isinstance(hole, Hole)
 
         self._holes.append(hole)
@@ -136,6 +158,10 @@ class Polygon(BaseShape):
 
     @property
     def points(self):
+        """The points of the polygon
+
+        :return: a list of the points
+        """
         if self._points:
             return self._points
 
@@ -143,11 +169,13 @@ class Polygon(BaseShape):
             if not self._points:
                 self._points = [shape.points]
             else:
+                # Whether the start point and end points are the same
                 if cmp(self._points[0][-2:], shape.points[:2]) == 0:
+                    # Where the last point and first are not the same
                     if cmp(self._points[0][:2], shape.points[-2:]) != 0:
-                        self._points[0].append(shape.points[2:])
+                        self._points[0].extend(shape.points[2:])
                 else:
-                    self._points[0].append(shape.points)
+                    self._points[0].extend(shape.points)
 
         for hole in self._holes:
             self._points.append(hole.points)
@@ -167,6 +195,10 @@ class Hole(BaseShape):
 
     @property
     def points(self):
+        """The points of the Hole
+
+        :return: a list of the points
+        """
         if self._points:
             return self._points
 
