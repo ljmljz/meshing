@@ -1,11 +1,5 @@
-import os
-import json
-import logging
 import math
-import copy
 import numpy
-
-import geometry as geo
 
 
 class BaseShape(object):
@@ -234,8 +228,3 @@ class Rectangle(Polygon):
         self._shapes.append(Line([self.start[0], self.end[1]], [self.end[0], self.end[1]]))
         self._shapes.append(Line([self.end[0], self.end[1]], [self.end[0], self.start[1]]))
         self._shapes.append(Line([self.end[0], self.start[1]], [self.start[0], self.start[1]]))
-
-
-
-
-#if __name__ == "__main__":

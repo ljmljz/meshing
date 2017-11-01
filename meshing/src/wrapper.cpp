@@ -114,7 +114,6 @@ static PyObject* Geometry_Triangulate(Geometry* self) {
     Points points;
     Point point;
 
-    double* ptr = NULL;
     N i,j;
 
     if (!self->mPolygon) return NULL;
