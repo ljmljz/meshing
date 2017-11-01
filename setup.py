@@ -2,6 +2,8 @@ from distutils.core import setup, Extension
 import os, sys
 import site
 
+site_packages_path = os.path.join(os.path.dirname(site.__file__), 'site-packages')
+
 ext_modules = [
     Extension(
         'meshing._geometry',
@@ -11,7 +13,7 @@ ext_modules = [
             'meshing/src',
             '/user/local/include',
             os.path.join(sys.prefix, 'include'),
-            os.path.join(site.getsitepackages()[0], 'numpy', 'core', 'include')
+            os.path.join(site_packages_path, 'numpy', 'core', 'include')
         ],
         library_dirs=[os.path.join(sys.prefix, 'lib')],
         extra_compile_args=['-std=c++11']
